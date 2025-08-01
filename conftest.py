@@ -5,6 +5,10 @@ import pytest
 
 @pytest.fixture(scope="function")
 def setup_browser():
-    driver = webdriver.Chrome()    
+    # Add headless mode for CI compatibility
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless=new")
+    
+    driver = webdriver.Chrome(options=options)    
     yield driver
     driver.quit()
