@@ -26,8 +26,7 @@ def test_link_click(setup_browser, product):
     driver.get("https://saucedemo.com")
 
     product_name = product["product_name"]
-    print(product_name)
-    
+        
     login_page = LoginPage(driver)
     inventory_page = login_page.login_expect_success("standard_user", "secret_sauce")
     item_page = inventory_page.click_product_link(product_name)
