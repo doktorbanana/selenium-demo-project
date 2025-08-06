@@ -14,8 +14,15 @@ class BasePage:
         return substring in self.driver.current_url
     
     def wait_for_url_contains(self, substring):
-        return WebDriverWait(self.driver, self.timeout).until(EC.url_contains(substring))
-
+        try:
+            return WebDriverWait(self.driver, self.timeout).until(EC.url_contains(substring))
+        except TimeoutException:
+            current_url = self.driver.current_url
+            raise AssertionError(
+                f"Page load failed. Expected URL to contain: '{substring}', "
+                f"Current URL: '{current_url}'"
+            )
+        
     def wait_for_element(self, locator):  
         return WebDriverWait(self.driver, self.timeout).until(  
             EC.presence_of_element_located(locator)
@@ -25,9 +32,14 @@ class BasePage:
         return WebDriverWait(self.driver, self.timeout).until(  
             EC.visibility_of_element_located(locator)
         )
+    
+    def wait_for_element_clickable(self, locator):
+        return WebDriverWait(self.driver, self.timeout).until(  
+            EC.element_to_be_clickable(locator)
+        )
 
     def click_element(self, locator):  
-        self.wait_for_element(locator).click()  
+        self.wait_for_element_clickable(locator).click()  
       
     def input_text(self, locator, text):  
-        self.wait_for_element(locator).send_keys(text)
+        self.wait_for_element_visible(locator).send_keys(text)
