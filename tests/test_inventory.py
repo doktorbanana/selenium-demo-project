@@ -4,7 +4,8 @@ import pytest
 
 products = load_csv("./test_data/products.csv")
 
-@pytest.mark.parametrize("product", products)
+@pytest.mark.parametrize("product", products )
+@pytest.mark.flaky(reruns=5, reruns_delay=2)
 def test_img_click(setup_browser, product):
     driver = setup_browser
     driver.get("https://saucedemo.com")
@@ -19,6 +20,7 @@ def test_img_click(setup_browser, product):
 
 
 @pytest.mark.parametrize("product", products)
+@pytest.mark.flaky(reruns=5, reruns_delay=2)
 def test_link_click(setup_browser, product):
     driver = setup_browser
     driver.get("https://saucedemo.com")

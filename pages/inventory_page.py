@@ -6,11 +6,7 @@ from selenium.common.exceptions import TimeoutException
 class InventoryPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
-
-        try:
-            self.wait_for_url_contains("inventory.html")
-        except TimeoutException:
-            raise AssertionError("We are not on the Inventory page")
+        self.wait_for_url_contains("inventory.html")
         
         # Locators for the inventory page elements
         self.inventory_item_locator = (By.CSS_SELECTOR, "div[data-test='inventory-item']")

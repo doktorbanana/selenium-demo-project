@@ -6,11 +6,8 @@ from pages.base_page import BasePage
 class LoginPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
-
-        try:
-            self.wait_for_url_contains("saucedemo.com")
-        except TimeoutException:
-            raise AssertionError("We are not on the Login page")
+        self.wait_for_url_contains("saucedemo.com")
+        
 
         # Locators for the login page elements
         self.username_locator = (By.CSS_SELECTOR, "input[data-test='username']")
@@ -36,7 +33,7 @@ class LoginPage(BasePage):
     def _login_expect_error(self, username, password, error_locator):
         self._login(username, password)
         try:
-            self.wait_for_element(error_locator)
+            self.wait_for_element_visible(error_locator)
             return self 
         except TimeoutException:
             AssertionError("Error message not found")
