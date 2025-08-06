@@ -26,8 +26,6 @@ class InventoryPage(BasePage):
 
     def get_products(self):
         products = self.driver.find_elements(*self.inventory_item_locator)
-        for product in products:
-            print(f"Found product: {product.text}")
         return products
 
     def get_product_by_name(self, product_name):
@@ -49,6 +47,7 @@ class InventoryPage(BasePage):
     def click_remove_from_cart(self, product_name):
         product = self.get_product_by_name(product_name)
         if product:
+            self.wait_for_element_visible(self.remove_from_cart_button_locator)
             remove_button = product.find_element(*self.remove_from_cart_button_locator)
             remove_button.click()
         else:
@@ -57,6 +56,7 @@ class InventoryPage(BasePage):
     def click_product_link(self, product_name):
         product = self.get_product_by_name(product_name)
         if product:
+            self.wait_for_element_visible(self.item_link_locator)
             product_link = product.find_element(*self.item_link_locator)
             product_link.click()
                 
@@ -68,7 +68,7 @@ class InventoryPage(BasePage):
             product_img.click()
             return ItemPage(self.driver)
         else:
-            raise AssertionError(f"PPProduct '{product_name}' not found in inventory. Products available: {[p.text for p in self.get_products()]}")
+            raise AssertionError(f"Product '{product_name}' not found in inventory.")
 
     def get_num_of_items_in_cart(self):
         cart_item = self.driver.find_element(self.cart_item_count_locator)
