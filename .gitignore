@@ -2,3 +2,6 @@ venv/
 __pychache__
 *.pyc
 ._*
+
+# Test Reports
+test_reports/*
