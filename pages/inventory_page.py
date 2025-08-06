@@ -17,7 +17,7 @@ class InventoryPage(BasePage):
         self.add_to_cart_button_locator = (By.CSS_SELECTOR, "button[data-test^='add-to-cart']")
         self.remove_from_cart_button_locator = (By.CSS_SELECTOR, "button[data-test^='remove-']")
         
-        self.cart_item_count_locator = (By.CSS_SELECTOR, "span[data-test='shopping_cart_badge']")
+        self.cart_item_count_locator = (By.CSS_SELECTOR, "span[data-test='shopping-cart-badge']")
 
 
     def get_products(self):
@@ -35,6 +35,7 @@ class InventoryPage(BasePage):
     def click_add_to_cart(self, product_name):
         product = self.get_product_by_name(product_name)
         if product:
+            self.wait_for_element_visible(self.add_to_cart_button_locator)
             add_button = product.find_element(*self.add_to_cart_button_locator)
             add_button.click()
         else:
@@ -70,10 +71,11 @@ class InventoryPage(BasePage):
             raise AssertionError(f"Product '{product_name}' not found in inventory.")
 
     def get_num_of_items_in_cart(self):
-        cart_item = self.driver.find_element(self.cart_item_count_locator)
-        if cart_item:
+        try:
+            self.wait_for_element_visible(self.cart_item_count_locator)
+            cart_item = self.driver.find_element(*self.cart_item_count_locator)
             return int(cart_item.text)
-        else:
+        except AssertionError:
             return 0
     
     
