@@ -4,7 +4,6 @@ on:
     pull_request:
         branches: [ main ]  # Runs on PRs targeting "main" branch
 
-
 jobs:
   test:
     runs-on: ubuntu-latest   # Use latest Ubuntu runner
@@ -40,6 +39,7 @@ jobs:
 
     - name: Upload test report
       uses: actions/upload-artifact@v4
+      if: always()  # Ensure this step runs even if previous steps fail
       with:
         name: test-report
         path: test_reports/report.html
