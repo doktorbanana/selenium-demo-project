@@ -20,6 +20,11 @@ class BasePage:
         return WebDriverWait(self.driver, self.timeout).until(  
             EC.presence_of_element_located(locator)
         )
+    
+    def wait_for_element_visible(self, locator):
+        return WebDriverWait(self.driver, self.timeout).until(  
+            EC.visibility_of_element_located(locator)
+        )
 
     def click_element(self, locator):  
         self.wait_for_element(locator).click()  
