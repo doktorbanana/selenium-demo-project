@@ -25,7 +25,10 @@ class InventoryPage(BasePage):
 
 
     def get_products(self):
-        return self.driver.find_elements(*self.inventory_item_locator)
+        products = self.driver.find_elements(*self.inventory_item_locator)
+        for product in products:
+            print(f"Found product: {product.text}")
+        return products
 
     def get_product_by_name(self, product_name):
         products = self.get_products()
@@ -33,8 +36,7 @@ class InventoryPage(BasePage):
             name = product.find_element(*self.item_name_locator).text
             if name == product_name:
                 return product
-            else:
-                raise AssertionError(f"Product '{product_name}' not found in inventory")
+        raise AssertionError(f"Product '{product_name}' not found in inventory. Products available: {[p.text for p in products]}")
     
     def click_add_to_cart(self, product_name):
         product = self.get_product_by_name(product_name)
@@ -57,18 +59,16 @@ class InventoryPage(BasePage):
         if product:
             product_link = product.find_element(*self.item_link_locator)
             product_link.click()
-        else:
-            raise AssertionError(f"Product '{product_name}' not found in inventory")
-        
+                
     def click_product_img(self, product_name):
         product = self.get_product_by_name(product_name)
-        self.wait_for_element_visible(self.item_img_locator)
         if product:
+            self.wait_for_element_visible(self.item_img_locator)
             product_img = product.find_element(*self.item_img_locator)
             product_img.click()
             return ItemPage(self.driver)
         else:
-            raise AssertionError(f"Product '{product_name}' not found in inventory. Products available: {[p.text for p in self.get_products()]}")
+            raise AssertionError(f"PPProduct '{product_name}' not found in inventory. Products available: {[p.text for p in self.get_products()]}")
 
     def get_num_of_items_in_cart(self):
         cart_item = self.driver.find_element(self.cart_item_count_locator)
