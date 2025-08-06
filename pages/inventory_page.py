@@ -59,6 +59,9 @@ class InventoryPage(BasePage):
             self.wait_for_element_visible(self.item_link_locator)
             product_link = product.find_element(*self.item_link_locator)
             product_link.click()
+            return ItemPage(self.driver)
+        else:
+            raise AssertionError(f"Product '{product_name}' not found in inventory.")
                 
     def click_product_img(self, product_name):
         product = self.get_product_by_name(product_name)
