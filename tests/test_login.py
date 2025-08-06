@@ -1,18 +1,20 @@
 from pages.login_page import LoginPage
+from utils.data_loader import load_csv
 import pytest
 
-@pytest.mark.parametrize("username, password, expected", [
-    ("standard_user", "secret_sauce", "inventory_page"),        # Valid
-    ("", "", "empty_fields_error"),                             # Empty fields
-    ("locked_out_user", "secret_sauce", "locked_out_error"),    # Locked out user
-    ("invalid", "invalid", "invalid_creds_error")               # Invalid credentials
-])
+users = load_csv("./test_data/users.csv")
 
-def test_login(setup_browser, username, password, expected):
+@pytest.mark.parametrize("user", users)
+
+def test_login(setup_browser, user):
     driver = setup_browser
     driver.get("https://saucedemo.com")
 
     login_page = LoginPage(driver)
+
+    username = user["username"]
+    password = user["password"]
+    expected = user["expected"]
 
     match expected:
         case "inventory_page":
