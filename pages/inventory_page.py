@@ -47,7 +47,7 @@ class InventoryPage(BasePage):
     def click_remove_from_cart(self, product_name):
         product = self.get_product_by_name(product_name)
         if product:
-            remove_button = product.find_element(*self.)
+            remove_button = product.find_element(*self.remove_from_cart_button_locator)
             remove_button.click()
         else:
             raise AssertionError(f"Product '{product_name}' not found in inventory")
