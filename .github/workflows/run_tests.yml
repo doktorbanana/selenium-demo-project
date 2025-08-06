@@ -35,7 +35,7 @@ jobs:
 
     - name: Run tests with pytest
       run: |
-        pytest tests/ --html=test_reports/report.html --self-contained-html
+        pytest
 
     - name: Upload test report
       uses: actions/upload-artifact@v4
