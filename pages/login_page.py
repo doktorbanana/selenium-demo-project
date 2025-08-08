@@ -49,6 +49,8 @@ class LoginPage(BasePage):
     def login_expect_missing_username(self, username, password):
         return self._login_expect_error(username, password, self.alert_missing_user_locator)
     
+    def login_expect_missing_password(self, username, password):
+        return self._login_expect_error(username, password, self.alert_missing_password_locator)
     
     def login_expect_locked_user(self, username, password):
         return self._login_expect_error(username, password, self.alert_locked_user_locator)
