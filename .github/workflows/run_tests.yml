@@ -37,9 +37,10 @@ jobs:
       run: |
         pytest
 
-    - name: Upload test report
+    - name: Upload test report folder
       uses: actions/upload-artifact@v4
       if: always()  # Ensure this step runs even if previous steps fail
       with:
         name: test-report
-        path: test_reports/report.html
+        path: test_reports
+        
