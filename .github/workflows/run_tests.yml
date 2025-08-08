@@ -41,6 +41,7 @@ jobs:
     
     - name: Compress Screenshots
       uses: clydedz/compress-images@v1
+      if: always()  # Ensure this step runs even if previous steps fail
       with:
         input-directory: test_reports/screenshots/
         output-directory: test_reports/screenshots/
