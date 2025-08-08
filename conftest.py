@@ -5,6 +5,11 @@ import datetime
 import pytest_html
 import os
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--intentionally-fail", action="store_true", default=False, help="Run tests that are intentionally failing for demonstration purposes."
+    )
+
 @pytest.fixture(scope="function")
 def setup_browser():
     # Add headless mode for CI compatibility
