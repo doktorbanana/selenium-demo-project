@@ -1,5 +1,6 @@
 import csv
 
+
 def load_csv(file_path):
     data = []
     try:
