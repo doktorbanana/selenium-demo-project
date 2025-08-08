@@ -1,7 +1,7 @@
-product_name
-Sauce Labs Backpack
-Sauce Labs Bike Light
-Sauce Labs Bolt T-Shirt
-Sauce Labs Fleece Jacket
-Sauce Labs Onesie
-Test.allTheThings() T-Shirt (Red)
+product_name,custom_id
+Sauce Labs Backpack,Backpack
+Sauce Labs Bike Light,Bike_Light
+Sauce Labs Bolt T-Shirt,Bolt_T_Shirt
+Sauce Labs Fleece Jacket,Jacket
+Sauce Labs Onesie,Onesie
+Test.allTheThings() T-Shirt (Red),Red_T_Shirt
