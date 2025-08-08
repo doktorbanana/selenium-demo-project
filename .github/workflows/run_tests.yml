@@ -44,5 +44,5 @@ jobs:
       if: always()  # Ensure this step runs even if previous steps fail
       with:
         name: test-report
-        path: test_reports
+        path: test_reports/
         
