@@ -39,7 +39,7 @@ def pytest_runtest_makereport(item, call):
             driver.save_screenshot(screenshot_path + "/" + screenshot_name)
 
             extras = getattr(report, "extras", [])
-            extras.append(pytest_html.extras.image("../" + screenshot_path + "/" + screenshot_name))
+            extras.append(pytest_html.extras.image("screenshots/" + screenshot_name))
             report.extras = extras
 
 
