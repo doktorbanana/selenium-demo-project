@@ -35,8 +35,8 @@ class LoginPage(BasePage):
         try:
             self.wait_for_element_visible(error_locator)
             return self 
-        except TimeoutException:
-            AssertionError("Error message not found")
+        except AssertionError:
+            raise AssertionError(f"Error message not found within {self.timeout} seconds. Used locator: {error_locator}")
 
     def login_expect_success(self, username, password):
         self._login(username, password)
