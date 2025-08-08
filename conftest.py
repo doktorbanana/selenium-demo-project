@@ -53,7 +53,7 @@ def pytest_runtest_makereport(item, call):
             driver.set_window_size(original_size['width'], original_size['height'])
 
             extras = getattr(report, "extras", [])
-            extras.append(pytest_html.extras.image(SCREENSHOT_PATH_RELATIVE + screenshot_name))
+            extras.append(pytest_html.extras.image(SCREENSHOT_PATH_RELATIVE + "/" + screenshot_name))
             report.extras = extras
 
     return report
