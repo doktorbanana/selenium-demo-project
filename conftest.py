@@ -28,19 +28,11 @@ def pytest_sessionstart(session):
 def setup_browser():
     # Add headless mode for CI compatibility
     options = webdriver.ChromeOptions()
-    
-    prefs = {
-        "profile.password_manager_leak_detection_enabled": False
-    }
-    options.add_experimental_option("prefs", prefs)
     options.add_argument("--headless=new")
-    options.add_argument("--start-maximized")
-
-    driver = webdriver.Chrome(options=options)
-    driver.delete_all_cookies()   
+    driver = webdriver.Chrome(options=options)    
     yield driver
     driver.quit()
-
+    
 @pytest.fixture(scope="function")
 def standard_login(setup_browser):
     driver = setup_browser
