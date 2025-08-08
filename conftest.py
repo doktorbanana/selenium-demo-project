@@ -9,8 +9,8 @@ import shutil
 
 
 
-SCREENSHOT_PATH_RELATIVE = "screenshots"
-SCREENSHOT_PATH = "test_reports/" + SCREENSHOT_PATH_RELATIVE
+SCREENSHOTS_PATH_RELATIVE = "screenshots"
+SCREENSHOTS_PATH = os.path.join("test_reports", SCREENSHOTS_PATH_RELATIVE)
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -19,9 +19,9 @@ def pytest_addoption(parser):
 
 def pytest_sessionstart(session):
     # Create an empty directory for screenshots
-    if os.path.exists(SCREENSHOT_PATH):
-        shutil.rmtree(SCREENSHOT_PATH)
-    os.mkdir(SCREENSHOT_PATH)
+    if os.path.exists(SCREENSHOTS_PATH):
+        shutil.rmtree(SCREENSHOTS_PATH)
+    os.makedirs(SCREENSHOTS_PATH)
 
 @pytest.fixture(scope="function")
 def setup_browser():
@@ -43,17 +43,18 @@ def pytest_runtest_makereport(item, call):
         if driver:
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             screenshot_name = f"{item.name}_{timestamp}.png"
- 
+            screenshot_path = os.path.join(SCREENSHOTS_PATH, screenshot_name)
+
             original_size = driver.get_window_size()
             required_width = driver.execute_script('return document.body.parentNode.scrollWidth')
             required_height = driver.execute_script('return document.body.parentNode.scrollHeight')
             driver.set_window_size(required_width, required_height)
-            driver.find_element(By.TAG_NAME, 'body').screenshot(
-                SCREENSHOT_PATH + "/" + screenshot_name)
+            driver.find_element(By.TAG_NAME, 'body').screenshot(screenshot_path)
             driver.set_window_size(original_size['width'], original_size['height'])
 
+            screenshot_path_relative = os.path.join(SCREENSHOTS_PATH_RELATIVE, screenshot_name)
             extras = getattr(report, "extras", [])
-            extras.append(pytest_html.extras.image(SCREENSHOT_PATH_RELATIVE + "/" + screenshot_name))
+            extras.append(pytest_html.extras.image(screenshot_path_relative))
             report.extras = extras
 
     return report
