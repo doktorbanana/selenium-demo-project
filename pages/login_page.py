@@ -35,17 +35,13 @@ class LoginPage(BasePage):
         try:
             self.wait_for_element_visible(error_locator)
             return self 
-        except TimeoutException:
-            AssertionError("Error message not found")
+        except AssertionError:
+            raise AssertionError(f"Error message not found within {self.timeout} seconds. Used locator: {error_locator}")
 
     def login_expect_success(self, username, password):
         self._login(username, password)
-        # Wait for the page to load
-        try:
-            self.wait_for_url_contains("inventory.html")
-            return InventoryPage(self.driver)
-        except TimeoutException:
-            AssertionError("Login failed or did not redirect to inventory page")
+        self.wait_for_url_contains("inventory.html")
+        return InventoryPage(self.driver)
             
     def login_expect_invalid_credentials(self, username, password):
         return self._login_expect_error(username, password, self.alert_invalid_credentials_locator)
