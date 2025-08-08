@@ -58,11 +58,7 @@ class InventoryPage(BasePage):
         return ItemPage(self.driver)
     
     def get_num_of_items_in_cart(self):
-        try:
-            self.wait_for_element_visible(self.cart_item_count_locator)
-            cart_item = self.driver.find_element(*self.cart_item_count_locator)
-            return int(cart_item.text)
-        except AssertionError:
-            return 0
-    
+        self.wait_for_element_visible(self.cart_item_count_locator)
+        cart_item = self.driver.find_element(*self.cart_item_count_locator)
+        return int(cart_item.text)
     
