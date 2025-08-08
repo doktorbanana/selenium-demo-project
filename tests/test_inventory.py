@@ -26,12 +26,9 @@ def test_link_click(standard_login, product):
     assert item_page.url_contains("item.html"), "Clicking product link did not redirect to item page"
 
 
-def test_cart_count(setup_browser):
-    driver = setup_browser
-    driver.get("https://saucedemo.com")
-    
-    login_page = LoginPage(driver)
-    inventory_page = login_page.login_expect_success("standard_user", "secret_sauce")
+def test_cart_count(standard_login):
+    inventory_page = standard_login
+    driver = inventory_page.driver
     
     expected_cart_count = 0
     
@@ -40,7 +37,7 @@ def test_cart_count(setup_browser):
         inventory_page.click_add_to_cart(product_name)
         expected_cart_count += 1
         try:
-            WebDriverWait(driver, 10).until(
+            WebDriverWait(driver, inventory_page.timeout).until(
                 lambda d: inventory_page.get_num_of_items_in_cart() == expected_cart_count
             )  
         except TimeoutException:
@@ -52,7 +49,7 @@ def test_cart_count(setup_browser):
         expected_cart_count -= 1
         if expected_cart_count > 0:
             try:
-                WebDriverWait(driver, 10).until(
+                WebDriverWait(driver, inventory_page.timeout).until(
                     lambda d: inventory_page.get_num_of_items_in_cart() == expected_cart_count
                 )  
             except TimeoutException:
