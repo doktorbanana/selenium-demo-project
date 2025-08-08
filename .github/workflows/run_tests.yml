@@ -3,7 +3,7 @@ name: Python Tests
 on:
     pull_request:
         branches: [ main ]  # Runs on PRs targeting "main" branch
-
+        
 jobs:
   test:
     runs-on: ubuntu-latest   # Use latest Ubuntu runner
@@ -36,10 +36,19 @@ jobs:
     - name: Run tests with pytest
       run: |
         pytest
+    
+    - name: Compress Screenshots
+      uses: clydedz/compress-images@v1
+      if: always()  # Ensure this step runs even if previous steps fail
+      with:
+        input-directory: test_reports/screenshots/
+        output-directory: test_reports/screenshots/
+        png-compression-quality: 0.4
 
-    - name: Upload test report
+    - name: Upload test report folder
       uses: actions/upload-artifact@v4
       if: always()  # Ensure this step runs even if previous steps fail
       with:
         name: test-report
-        path: test_reports/report.html
+        path: test_reports/
+        
