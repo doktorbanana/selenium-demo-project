@@ -36,7 +36,6 @@ def pytest_runtest_makereport(item, call):
 
             if os.path.exists(screenshot_path):
                 shutil.rmtree(screenshot_path)
-            
             os.mkdir(screenshot_path)
  
             original_size = driver.get_window_size()
