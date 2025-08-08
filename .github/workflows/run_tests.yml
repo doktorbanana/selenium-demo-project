@@ -37,7 +37,7 @@ jobs:
 
     - name: Run tests with pytest
       run: |
-        pytest --intentionally-fail
+        pytest --intentionally-fail tests/test_intentionally_fail.py
 
     - name: Upload test report folder
       uses: actions/upload-artifact@v4
