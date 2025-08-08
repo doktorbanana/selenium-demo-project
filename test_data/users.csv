@@ -1,5 +1,5 @@
-username,password,expected
-standard_user,secret_sauce,inventory_page
-,,empty_fields_error
-locked_out_user,secret_sauce,locked_out_error
-invalid,invalid,invalid_creds_error
+username,password,expected,custom_id
+standard_user,secret_sauce,inventory_page,Standard_User
+,,empty_fields_error,Empty_Fields_User
+locked_out_user,secret_sauce,locked_out_error,Locked_Out_User
+invalid,invalid,invalid_creds_error,Invalid_User

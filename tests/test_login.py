@@ -3,9 +3,9 @@ from utils.data_loader import load_csv
 import pytest
 
 users = load_csv("./test_data/users.csv")
+custom_ids = [f"{row['custom_id']}" for row in users]
 
-@pytest.mark.parametrize("user", users)
-
+@pytest.mark.parametrize("user", users, ids=custom_ids)
 def test_login(setup_browser, user):
     driver = setup_browser
     driver.get("https://saucedemo.com")
