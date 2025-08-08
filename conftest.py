@@ -32,7 +32,7 @@ def setup_browser():
     driver = webdriver.Chrome(options=options)    
     yield driver
     driver.quit()
-    
+
 @pytest.fixture(scope="function")
 def standard_login(setup_browser):
     driver = setup_browser
