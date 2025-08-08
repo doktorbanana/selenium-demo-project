@@ -42,8 +42,8 @@ jobs:
     - name: Compress Screenshots
       uses: clydedz/compress-images@v1
       with:
-        input-directory: test_reports/screenshots
-        output-directory: test_reports/screenshots
+        input-directory: test_reports/screenshots/
+        output-directory: test_reports/screenshots/
         png-compression-quality: 0.4
 
     - name: Upload test report folder
