@@ -3,6 +3,8 @@ name: Python Tests
 on:
     pull_request:
         branches: [ main ]  # Runs on PRs targeting "main" branch
+    push:
+        branches: [ feat--screenshot-failed-tests ]  # Runs on pushes to "main" branch
 
 jobs:
   test:
