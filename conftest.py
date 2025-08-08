@@ -4,6 +4,7 @@ import pytest
 import datetime
 import pytest_html
 import os
+import shutil
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -33,9 +34,11 @@ def pytest_runtest_makereport(item, call):
             screenshot_path = f"test_reports/screenshots"
             screenshot_name = f"{item.name}_{timestamp}.png"
 
-            if not os.path.exists(screenshot_path):
-                os.mkdir(screenshot_path)
-
+            if os.path.exists(screenshot_path):
+                shutil.rmtree(screenshot_path)
+            
+            os.mkdir(screenshot_path)
+ 
             driver.save_screenshot(screenshot_path + "/" + screenshot_name)
 
             extras = getattr(report, "extras", [])
