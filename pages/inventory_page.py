@@ -17,7 +17,7 @@ class InventoryPage(BasePage):
         self.add_to_cart_button_locator = (By.CSS_SELECTOR, "button[data-test^='add-to-cart']")
         self.remove_from_cart_button_locator = (By.CSS_SELECTOR, "button[data-test^='remove-']")
         
-        self.cart_item_count_locator = (By.CSS_SELECTOR, "span[data-test='shopping_cart_badge']")
+        self.cart_item_count_locator = (By.CSS_SELECTOR, "span[data-test='shopping-cart-badge']")
 
 
     def get_products(self):
@@ -58,10 +58,7 @@ class InventoryPage(BasePage):
         return ItemPage(self.driver)
     
     def get_num_of_items_in_cart(self):
-        cart_item = self.driver.find_element(self.cart_item_count_locator)
-        if cart_item:
-            return int(cart_item.text)
-        else:
-            return 0
-    
+        self.wait_for_element_visible(self.cart_item_count_locator)
+        cart_item = self.driver.find_element(*self.cart_item_count_locator)
+        return int(cart_item.text)
     

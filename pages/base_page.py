@@ -38,6 +38,14 @@ class BasePage:
             )
         except TimeoutException:
             raise AssertionError(f"Element with locator {locator} not visible within {self.timeout} seconds")
+        
+    def wait_for_element_not_visible(self, locator):
+        try:
+            return WebDriverWait(self.driver, self.timeout).until(  
+                EC.invisibility_of_element_located(locator)
+            )
+        except TimeoutException:
+            raise AssertionError(f"Element with locator {locator} still visible after {self.timeout} seconds")
     
     def wait_for_element_clickable(self, locator):
         try:
