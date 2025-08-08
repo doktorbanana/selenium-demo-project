@@ -6,7 +6,7 @@ import datetime
 import pytest_html
 import os
 import shutil
-
+from pages.login_page import LoginPage
 
 
 SCREENSHOTS_PATH_RELATIVE = "screenshots"
@@ -23,6 +23,7 @@ def pytest_sessionstart(session):
         shutil.rmtree(SCREENSHOTS_PATH)
     os.makedirs(SCREENSHOTS_PATH)
 
+##### FIXTURES #####
 @pytest.fixture(scope="function")
 def setup_browser():
     # Add headless mode for CI compatibility
@@ -32,6 +33,15 @@ def setup_browser():
     yield driver
     driver.quit()
 
+@pytest.fixture(scope="function")
+def standard_login(setup_browser):
+    driver = setup_browser
+    driver.get("https://saucedemo.com")
+    login_page = LoginPage(driver)
+    return login_page.login_expect_success("standard_user", "secret_sauce")
+    
+
+##### HOOKS #####
 @pytest.hookimpl(wrapper=True)
 def pytest_runtest_makereport(item, call):
     # This hook is used to capture the test report and take a screenshot if the test fails
