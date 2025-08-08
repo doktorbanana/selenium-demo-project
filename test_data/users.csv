@@ -1,5 +1,7 @@
 username,password,expected,custom_id
 standard_user,secret_sauce,inventory_page,Standard_User
 ,,empty_fields_error,Empty_Fields_User
+,secret_sauce,missing_username_error,Missing_Username_User
+standard_user,,missing_password_error,Missing_Password_User
 locked_out_user,secret_sauce,locked_out_error,Locked_Out_User
 invalid,invalid,invalid_creds_error,Invalid_User
