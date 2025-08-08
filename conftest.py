@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 import pytest
 import datetime
 import pytest_html
@@ -46,7 +47,13 @@ def pytest_runtest_makereport(item, call):
             
             os.mkdir(screenshot_path)
  
-            driver.save_screenshot(screenshot_path + "/" + screenshot_name)
+            original_size = driver.get_window_size()
+            required_width = driver.execute_script('return document.body.parentNode.scrollWidth')
+            required_height = driver.execute_script('return document.body.parentNode.scrollHeight')
+            driver.set_window_size(required_width, required_height)
+            driver.find_element(By.TAG_NAME, 'body').screenshot(screenshot_path
+                                                               + "/" + screenshot_name)
+            driver.set_window_size(original_size['width'], original_size['height'])
 
             extras = getattr(report, "extras", [])
             extras.append(pytest_html.extras.image("screenshots/" + screenshot_name))
