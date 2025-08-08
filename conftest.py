@@ -17,7 +17,7 @@ def pytest_addoption(parser):
         "--intentionally-fail", action="store_true", default=False, help="Run tests that are intentionally failing for demonstration purposes."
     )
 
-def pytest_sessionsionstart(session):
+def pytest_sessionstart(session):
     # Create an empty directory for screenshots
     if os.path.exists(SCREENSHOT_PATH):
         shutil.rmtree(SCREENSHOT_PATH)
