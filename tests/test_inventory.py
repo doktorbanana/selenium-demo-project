@@ -1,3 +1,9 @@
+"""
+This file contains tests for the inventory page functionality.
+It includes tests for clicking product images and links,
+adding/removing products from the cart, and verifying cart item counts.
+"""
+
 from utils.data_loader import load_csv
 import pytest
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,6 +16,7 @@ custom_ids = [f"{row['custom_id']}" for row in products]
 @pytest.mark.parametrize("product", products, ids=custom_ids)
 @pytest.mark.flaky(reruns=5, reruns_delay=2)
 def test_img_click(standard_login, product):
+    """Test clicking product images on the inventory page."""
     product_name = product["product_name"]
     inventory_page = standard_login
     item_page = inventory_page.click_product_img(product_name)
@@ -20,6 +27,7 @@ def test_img_click(standard_login, product):
 @pytest.mark.parametrize("product", products, ids=custom_ids)
 @pytest.mark.flaky(reruns=5, reruns_delay=2)
 def test_link_click(standard_login, product):
+    """Test clicking product links on the inventory page."""
     product_name = product["product_name"]
     inventory_page = standard_login
     item_page = inventory_page.click_product_link(product_name)
@@ -28,6 +36,7 @@ def test_link_click(standard_login, product):
 
 
 def test_cart_count(standard_login):
+    """Test adding and removing products from the cart."""
     inventory_page = standard_login
     driver = inventory_page.driver
     expected_cart_count = 0

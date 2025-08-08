@@ -1,3 +1,9 @@
+"""
+This file contains the configuration and fixtures for the test suite.
+It includes browser setup, screenshot handling, and custom command-line
+options.
+"""
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import pytest
@@ -13,6 +19,7 @@ SCREENSHOTS_PATH = os.path.join("test_reports", SCREENSHOTS_PATH_RELATIVE)
 
 
 def pytest_addoption(parser):
+    """Add custom command-line options for pytest."""
     parser.addoption(
         "--intentionally-fail",
         action="store_true",
@@ -23,7 +30,7 @@ def pytest_addoption(parser):
 
 
 def pytest_sessionstart(session):
-    # Create an empty directory for screenshots
+    """Create a directory for screenshots at the start of the session."""
     if os.path.exists(SCREENSHOTS_PATH):
         shutil.rmtree(SCREENSHOTS_PATH)
     os.makedirs(SCREENSHOTS_PATH)
@@ -36,6 +43,7 @@ def pytest_sessionstart(session):
 
 @pytest.fixture(scope="function")
 def setup_browser():
+    """Set up the browser for testing."""
     options = webdriver.ChromeOptions()
     prefs = {
         "profile.password_manager_leak_detection_enabled": False
@@ -49,6 +57,10 @@ def setup_browser():
 
 @pytest.fixture(scope="function")
 def standard_login(setup_browser):
+    """
+    Log in with standard user credentials
+    and return the inventory page.
+    """
     driver = setup_browser
     driver.get("https://saucedemo.com")
     login_page = LoginPage(driver)
@@ -62,6 +74,7 @@ def standard_login(setup_browser):
 
 @pytest.hookimpl(wrapper=True)
 def pytest_runtest_makereport(item, call):
+    """Capture screenshots on test failure."""
     report = yield
 
     if report.when == "call" and report.failed:

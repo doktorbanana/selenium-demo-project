@@ -1,3 +1,8 @@
+"""
+This file contains tests for the login functionality of the application.
+It includes tests for successful login, missing username, missing password,
+locked user, and invalid credentials.
+"""
 from pages.login_page import LoginPage
 from utils.data_loader import load_csv
 import pytest
@@ -8,6 +13,11 @@ custom_ids = [f"{row['custom_id']}" for row in users]
 
 @pytest.mark.parametrize("user", users, ids=custom_ids)
 def test_login(setup_browser, user):
+    """
+    Test logging in with various user scenarios.
+    This test covers successful login, missing username, missing password,
+    locked user, and invalid credentials.
+    """
     driver = setup_browser
     driver.get("https://saucedemo.com")
 

@@ -1,8 +1,18 @@
+"""
+This file contains a test that is intentionally designed to fail.
+It is used for demonstration purposes and will only run when the
+--intentionally-fail option is set.
+"""
+
 from pages.login_page import LoginPage
 import pytest
 
 
 def test_intentionally_fail(setup_browser, request):
+    """
+    This test is intentionally failing for demonstration purposes.
+    It is designed to fail when the --intentionally-fail option is not set.
+    """
     if not request.config.getoption("--intentionally-fail"):
         pytest.skip(reason="This test only runs with "
                     "--intentionally-fail option. "
