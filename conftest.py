@@ -5,7 +5,6 @@ import datetime
 import pytest_html
 import os
 
-
 @pytest.fixture(scope="function")
 def setup_browser():
     # Add headless mode for CI compatibility
@@ -33,7 +32,7 @@ def pytest_runtest_makereport(item, call):
         driver = item.funcargs.get('setup_browser')
         if driver:
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            screenshot_path = f"./test_reports/screenshots"
+            screenshot_path = f"test_reports/screenshots"
             screenshot_name = f"{item.name}_{timestamp}.png"
 
             if not os.path.exists(screenshot_path):
@@ -42,7 +41,7 @@ def pytest_runtest_makereport(item, call):
             driver.save_screenshot(screenshot_path + "/" + screenshot_name)
 
             extras = getattr(report, "extras", [])
-            extras.append(pytest_html.extras.image(screenshot_path + "/" + screenshot_name))
+            extras.append(pytest_html.extras.image("../" + screenshot_path + "/" + screenshot_name))
             report.extras = extras
 
 
