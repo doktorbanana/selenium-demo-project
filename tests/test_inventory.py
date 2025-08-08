@@ -3,8 +3,9 @@ from utils.data_loader import load_csv
 import pytest
 
 products = load_csv("./test_data/products.csv")
+custom_ids = [f"{row['custom_id']}" for row in products]
 
-@pytest.mark.parametrize("product", products )
+@pytest.mark.parametrize("product", products, ids=custom_ids)
 @pytest.mark.flaky(reruns=5, reruns_delay=2)
 def test_img_click(setup_browser, product):
     driver = setup_browser
@@ -19,7 +20,7 @@ def test_img_click(setup_browser, product):
     assert item_page.url_contains("item.html"), "Clicking product image did not redirect to item page"
 
 
-@pytest.mark.parametrize("product", products)
+@pytest.mark.parametrize("product", products, ids=custom_ids)
 @pytest.mark.flaky(reruns=5, reruns_delay=2)
 def test_link_click(setup_browser, product):
     driver = setup_browser
