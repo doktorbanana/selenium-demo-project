@@ -36,7 +36,7 @@ jobs:
 
     - name: Run tests with pytest
       run: |
-        pytest tests/test_inventory.py
+        pytest --count=20
     
     - name: Compress Screenshots
       uses: clydedz/compress-images@v1
