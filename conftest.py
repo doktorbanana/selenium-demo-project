@@ -46,7 +46,11 @@ def setup_browser():
     """Set up the browser for testing."""
     options = webdriver.ChromeOptions()
     prefs = {
-        "profile.password_manager_leak_detection_enabled": False
+        "profile": {
+            "enable_password_manager": False,
+            "password_manager_leak_detection_enabled": False
+        },
+        "credentials_enable_service": False
     }
     options.add_experimental_option("prefs", prefs)
     options.add_argument("--headless=new")
@@ -65,7 +69,6 @@ def standard_login(setup_browser):
     driver.get("https://saucedemo.com")
     login_page = LoginPage(driver)
     return login_page.login_expect_success("standard_user", "secret_sauce")
-
 
 #########
 # HOOKS #
