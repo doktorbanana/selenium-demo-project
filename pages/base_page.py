@@ -39,6 +39,13 @@ class BasePage:
                 f"Page load failed. Expected URL to contain: '{substring}', "
                 f"Current URL: '{current_url}'"
             )
+        
+    def wait_for_page_ready(self):
+        """Waits for the page to be fully loaded."""
+        WebDriverWait(self.driver, self.timeout).until(
+            lambda d: d.execute_script(
+                "return document.readyState") == "complete"
+        )
 
     def wait_for_element(self, locator):
         """Waits for an element to be present in the DOM."""
@@ -91,3 +98,4 @@ class BasePage:
     def input_text(self, locator, text):
         """Inputs text into an element after waiting for it to be visible."""
         self.wait_for_element_visible(locator).send_keys(text)
+

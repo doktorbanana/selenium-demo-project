@@ -18,6 +18,7 @@ class InventoryPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
         self.wait_for_url_contains("inventory.html")
+        self.wait_for_page_ready()
 
         # Locators for the inventory page elements
         self.inventory_item_locator = (
