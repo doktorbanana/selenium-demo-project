@@ -45,6 +45,7 @@ class InventoryPage(BasePage):
 
     def get_products(self):
         """Returns a list of all products in the inventory."""
+        self.wait_for_element_visible(self.inventory_item_locator)
         products = self.driver.find_elements(*self.inventory_item_locator)
         return products
 
