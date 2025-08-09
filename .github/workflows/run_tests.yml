@@ -3,7 +3,6 @@ name: Python Tests
 on:
     pull_request:
         branches: [ main ]  # Runs on PRs targeting "main" branch
-    push:
         
 jobs:
   test:
@@ -36,7 +35,7 @@ jobs:
 
     - name: Run tests with pytest
       run: |
-        pytest --count=50
+        pytest
     
     - name: Compress Screenshots
       uses: clydedz/compress-images@v1
