@@ -47,12 +47,10 @@ def setup_browser():
     options = webdriver.ChromeOptions()
     prefs = {
         "profile": {
-            "enable_password_manager": False,
             "password_manager_leak_detection_enabled": False
-        },
-        "credentials_enable_service": False
-    }
+        }}
     options.add_experimental_option("prefs", prefs)
+    options.add_argument("--disable-features=PasswordLeakToggleMove")
     options.add_argument("--headless=new")
     driver = webdriver.Chrome(options=options)
     yield driver
