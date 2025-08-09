@@ -46,9 +46,7 @@ def setup_browser():
     """Set up the browser for testing."""
     options = webdriver.ChromeOptions()
     prefs = {
-        "profile": {
-            "password_manager_leak_detection_enabled": False
-        }}
+        "profile.password_manager_leak_detection": False}
     options.add_experimental_option("prefs", prefs)
     options.add_argument("--disable-features=PasswordLeakToggleMove")
     options.add_argument("--headless=new")
