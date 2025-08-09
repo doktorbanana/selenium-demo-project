@@ -40,6 +40,13 @@ class BasePage:
                 f"Current URL: '{current_url}'"
             )
 
+    def wait_for_page_ready(self):
+        """Waits for the page to be fully loaded."""
+        WebDriverWait(self.driver, self.timeout).until(
+            lambda d: d.execute_script(
+                "return document.readyState") == "complete"
+        )
+
     def wait_for_element(self, locator):
         """Waits for an element to be present in the DOM."""
         try:

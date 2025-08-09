@@ -18,6 +18,7 @@ class InventoryPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
         self.wait_for_url_contains("inventory.html")
+        self.wait_for_page_ready()
 
         # Locators for the inventory page elements
         self.inventory_item_locator = (
@@ -45,6 +46,7 @@ class InventoryPage(BasePage):
 
     def get_products(self):
         """Returns a list of all products in the inventory."""
+        self.wait_for_element_visible(self.inventory_item_locator)
         products = self.driver.find_elements(*self.inventory_item_locator)
         return products
 
@@ -62,13 +64,14 @@ class InventoryPage(BasePage):
     def click_add_to_cart(self, product_name):
         """Clicks the 'Add to Cart' button for a product."""
         product = self.get_product_by_name(product_name)
+        self.wait_for_element_clickable(self.add_to_cart_button_locator)
         add_button = product.find_element(*self.add_to_cart_button_locator)
         add_button.click()
 
     def click_remove_from_cart(self, product_name):
         """Clicks the 'Remove from Cart' button for a product."""
         product = self.get_product_by_name(product_name)
-        self.wait_for_element_visible(self.remove_from_cart_button_locator)
+        self.wait_for_element_clickable(self.remove_from_cart_button_locator)
         remove_button = product.find_element(
             *self.remove_from_cart_button_locator
             )
@@ -77,7 +80,7 @@ class InventoryPage(BasePage):
     def click_product_link(self, product_name):
         """Clicks the product link to navigate to the item page."""
         product = self.get_product_by_name(product_name)
-        self.wait_for_element_visible(self.item_link_locator)
+        self.wait_for_element_clickable(self.item_link_locator)
         product_link = product.find_element(*self.item_link_locator)
         product_link.click()
         return ItemPage(self.driver)
@@ -85,7 +88,7 @@ class InventoryPage(BasePage):
     def click_product_img(self, product_name):
         """Clicks the product image to navigate to the item page."""
         product = self.get_product_by_name(product_name)
-        self.wait_for_element_visible(self.item_img_locator)
+        self.wait_for_element_clickable(self.item_img_locator)
         product_img = product.find_element(*self.item_img_locator)
         product_img.click()
         return ItemPage(self.driver)

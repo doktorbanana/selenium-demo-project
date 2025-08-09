@@ -19,6 +19,7 @@ class LoginPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
         self.wait_for_url_contains("saucedemo.com")
+        self.wait_for_page_ready()
 
         # Locators for the login page elements
         self.username_locator = (
