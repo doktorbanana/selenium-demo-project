@@ -19,9 +19,12 @@ def test_img_click(standard_login, product):
     """Test clicking product images on the inventory page."""
     product_name = product["product_name"]
     inventory_page = standard_login
-    item_page = inventory_page.click_product_img(product_name)
-    assert item_page.url_contains("item.html"), ""\
-        "Clicking product image did not redirect to item page"
+    try:
+        item_page = inventory_page.click_product_img(product_name)
+    except AssertionError:
+        raise AssertionError(
+            "Clicking product image did not redirect "
+            f"to item page. Current URL: {item_page.driver.current_url}")
 
 
 @pytest.mark.parametrize("product", products, ids=custom_ids)
@@ -30,9 +33,12 @@ def test_link_click(standard_login, product):
     """Test clicking product links on the inventory page."""
     product_name = product["product_name"]
     inventory_page = standard_login
-    item_page = inventory_page.click_product_link(product_name)
-    assert item_page.url_contains("item.html"), ""\
-        "Clicking product link did not redirect to item page"
+    try:
+        item_page = inventory_page.click_product_link(product_name)
+    except AssertionError:
+        raise AssertionError(
+            "Clicking product link did not redirect "
+            f"to item page. Current URL: {item_page.driver.current_url}")
 
 
 def test_cart_count(standard_login):
