@@ -20,10 +20,22 @@ Professional test automation demonstrating industry best practices for web appli
 - Automatic failure screenshots with full-page capture
 - Smart waits for element visibility and interactions
 - Flaky test retry mechanism with configurable delays
+- Custom error-messages for easy debugging on failure
 
 ### 📦 CI/CD Ready
 - GitHub Actions workflow for continuous testing
 - Self-contained HTML reports with screenshot attachments on failure
+
+### 🐳 Docker Support
+- Containerized testing supported
+- Pre-configured `docker-compose.yml` for local setup
+- Remote use of docker in Github Actions: containers for each Browser
+
+### 🌐 Cross-Browser Testing
+- Chrome/Firefox
+- Remote: parallel execution with browser matrix
+- Local: choose with CLI-option (`browser=`)
+
 
 ## Technologies Used
 
@@ -32,46 +44,50 @@ Professional test automation demonstrating industry best practices for web appli
 - pytest 8.4.1
 - pytest-html (HTML reporting)
 - GitHub Actions (CI/CD)
+- Docker (containerized testing)
 
 ## Setup Instructions
 
-Clone repository:
+### Basic Setup
 ```
 git clone https://github.com/doktorbanana/selenium-demo-project.git
 cd <path/to/project>
-```
 
-Create virtual environment:
-```
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
+.\venv\Scripts\activate    # Windows
+
+pip install -r requirements.txt
 ```
 
-Install dependencies:
+### Docker Setup (Optional)
+The tests can be executed in Docker containers for each browser. If Docker is installed on your system, run the following command to setup the images:
+
 ```
-pip install -r requirements.txt
-````
+docker-compose up -d  # Start required containers
+```
+
+Note: On the github-hosted remote runners Docker is enabled by default.
 
 ## Running Tests
 
-Tests are automatically run with html-report and rerun of failed flaky tests via:
+Tests are automatically run in Chrome with html-report and rerun of failed flaky tests via:
 ```
 pytest
 ````
 
-Execute intentionally failing demo test:
+Optional flags:
 ```
-pytest --intentionally-fail
+--intentionally-fail # run test that fails intentionally to checkout error-handling
+--browser=firefox # choose between chrome and firefox
+--docker # execute tests in docker container (needs installation, see above)
 ```
 
 ## Future Enhancements
 
 This project is work in progress. The following improvements are planned:
 
-- Add cross-browser testing (Firefox, Edge)
 - Add mobile device emulation
 - Add logging for better test debugging
 - Integrate with a test management tool (e.g., TestRail, Xray)
 - Add more test scenarios (e.g., sorting, filtering, checkout process)
-
