@@ -27,9 +27,6 @@ class InventoryPage(BasePage):
         self.item_name_locator = (
             By.CSS_SELECTOR,
             "div[data-test='inventory-item-name']")
-        self.item_link_locator = (
-            By.CSS_SELECTOR,
-            "a[data-test$='title-link']")
         self.item_img_locator = (
             By.CSS_SELECTOR,
             "img[data-test^='inventory-item']"
@@ -80,9 +77,7 @@ class InventoryPage(BasePage):
     def click_product_link(self, product_name):
         """Clicks the product link to navigate to the item page."""
         product = self.get_product_by_name(product_name)
-        self.wait_for_element_clickable(self.item_link_locator)
-        product_link = product.find_element(*self.item_link_locator)
-        product_link.click()
+        self.click_child_element(product, self.item_name_locator)
         return ItemPage(self.driver)
 
     def click_product_img(self, product_name):
