@@ -57,7 +57,7 @@ jobs:
 
     - name: Run tests with pytest
       run: |
-        pytest --browser=${{ matrix.browser }}
+        pytest --browser=${{ matrix.browser }} --docker
     
     - name: Compress Screenshots
       uses: clydedz/compress-images@v1
