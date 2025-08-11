@@ -4,7 +4,7 @@ It includes browser setup, screenshot handling, and custom command-line
 options.
 """
 
-from selenium import webdriver
+from utils.driver_factory import DriverFactory
 from selenium.webdriver.common.by import By
 import pytest
 import datetime
@@ -28,6 +28,20 @@ def pytest_addoption(parser):
         "for demonstration purposes."
     )
 
+    parser.addoption(
+        "--browser",
+        action="store",
+        default="chrome",
+        help="Browser to run tests: chrome or firefox"
+    )
+
+    parser.addoption(
+        "--docker",
+        action="store_true",
+        default=False,
+        help="Run tests in Docker environment"
+    )
+
 
 def pytest_sessionstart(session):
     """Create a directory for screenshots at the start of the session."""
@@ -42,15 +56,14 @@ def pytest_sessionstart(session):
 
 
 @pytest.fixture(scope="function")
-def setup_browser():
-    """Set up the browser for testing."""
-    options = webdriver.ChromeOptions()
-    prefs = {
-        "profile.password_manager_leak_detection": False}
-    options.add_experimental_option("prefs", prefs)
-    options.add_argument("--disable-features=PasswordLeakToggleMove")
-    options.add_argument("--headless=new")
-    driver = webdriver.Chrome(options=options)
+def setup_browser(request):
+    """
+    Set up the browser for testing based on command-line options.
+    """
+    browser_name = request.config.getoption("--browser", default="chrome")
+    remote = request.config.getoption("--docker", default=False)
+
+    driver = DriverFactory.create_driver(browser_name, remote)
     yield driver
     driver.quit()
 

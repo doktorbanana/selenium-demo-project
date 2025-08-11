@@ -11,7 +11,28 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.13"]
-
+        browser: [ "chrome", "firefox" ]
+    
+    services:
+      selenium-hub:
+        image: selenium/hub:4.34
+        ports:
+          - "4444:4444"
+      
+      chrome-node:
+        image: selenium/node-chrome:112.0
+        env:
+          SE_EVENT_BUS_HOST: selenium-hub
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+        
+      firefox:
+        image: selenium/node-firefox:130.0
+        env:
+          SE_EVENT_BUS_HOST: selenium-hub
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+  
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -36,7 +57,7 @@ jobs:
 
     - name: Run tests with pytest
       run: |
-        pytest
+        pytest --browser=${{ matrix.browser }} --docker
     
     - name: Compress Screenshots
       uses: clydedz/compress-images@v1
@@ -50,6 +71,6 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()  # Ensure this step runs even if previous steps fail
       with:
-        name: test-report
+        name: test-report_${{ matrix.browser }}
         path: test_reports/
         
