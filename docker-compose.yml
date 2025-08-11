@@ -18,7 +18,7 @@ services:
       - "6900:5900"  # VNC viewer access
 
   firefox:
-    image: selenium/node-firefox:latest
+    image: selenium/node-firefox:130.0
     shm_size: "2gb"
     depends_on:
       - selenium-hub

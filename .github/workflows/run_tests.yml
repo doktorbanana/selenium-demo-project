@@ -27,7 +27,7 @@ jobs:
           SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
         
       firefox:
-        image: selenium/node-firefox:latest
+        image: selenium/node-firefox:130.0
         env:
           SE_EVENT_BUS_HOST: selenium-hub
           SE_EVENT_BUS_PUBLISH_PORT: 4442
