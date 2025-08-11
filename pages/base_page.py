@@ -95,6 +95,14 @@ class BasePage:
         """Clicks an element after waiting for it to be clickable."""
         self.wait_for_element_clickable(locator).click()
 
+    def click_child_element(self, parent_element, child_locator):
+        """
+        Clicks a child element within a parent element.
+        """
+        child_element = parent_element.find_element(*child_locator)
+        self.wait_for_element_clickable(child_locator)
+        child_element.click()
+
     def input_text(self, locator, text):
         """Inputs text into an element after waiting for it to be visible."""
         self.wait_for_element_visible(locator).send_keys(text)
