@@ -12,6 +12,7 @@ custom_ids = [f"{row['custom_id']}" for row in users]
 
 
 @pytest.mark.parametrize("user", users, ids=custom_ids)
+@pytest.mark.login
 def test_login(setup_browser, user):
     """
     Test logging in with various user scenarios.

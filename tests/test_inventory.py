@@ -15,6 +15,7 @@ custom_ids = [f"{row['custom_id']}" for row in products]
 
 @pytest.mark.parametrize("product", products, ids=custom_ids)
 @pytest.mark.flaky(reruns=3, reruns_delay=1)
+@pytest.mark.inventory
 def test_img_click(standard_login, product):
     """Test clicking product images on the inventory page."""
     product_name = product["product_name"]
@@ -29,6 +30,7 @@ def test_img_click(standard_login, product):
 
 @pytest.mark.parametrize("product", products, ids=custom_ids)
 @pytest.mark.flaky(reruns=3, reruns_delay=1)
+@pytest.mark.inventory
 def test_link_click(standard_login, product):
     """Test clicking product links on the inventory page."""
     product_name = product["product_name"]
@@ -41,6 +43,7 @@ def test_link_click(standard_login, product):
             f"to item page. Current URL: {item_page.driver.current_url}")
 
 
+@pytest.mark.inventory
 def test_cart_count(standard_login):
     """Test adding and removing products from the cart."""
     inventory_page = standard_login
