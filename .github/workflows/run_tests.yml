@@ -4,14 +4,36 @@ on:
     pull_request:
         branches: [ main ]  
     workflow_dispatch:
-
+      
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.13"]
+        browser: [ "chrome", "firefox" ]
+    
+    services:
+      selenium-hub:
+        image: selenium/hub:4.34
+        ports:
+          - "4444:4444"
+      
+      chrome-node:
+        image: selenium/node-chrome:112.0
+        env:
+          SE_EVENT_BUS_HOST: selenium-hub
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+        
 
+      firefox:
+        image: selenium/node-firefox:latest
+        env:
+          SE_EVENT_BUS_HOST: selenium-hub
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+  
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -36,7 +58,7 @@ jobs:
 
     - name: Run tests with pytest
       run: |
-        pytest
+        pytest --browser=${{ matrix.browser }}
     
     - name: Compress Screenshots
       uses: clydedz/compress-images@v1
