@@ -61,18 +61,12 @@ class InventoryPage(BasePage):
     def click_add_to_cart(self, product_name):
         """Clicks the 'Add to Cart' button for a product."""
         product = self.get_product_by_name(product_name)
-        self.wait_for_element_clickable(self.add_to_cart_button_locator)
-        add_button = product.find_element(*self.add_to_cart_button_locator)
-        add_button.click()
+        self.click_child_element(product, self.add_to_cart_button_locator)
 
     def click_remove_from_cart(self, product_name):
         """Clicks the 'Remove from Cart' button for a product."""
         product = self.get_product_by_name(product_name)
-        self.wait_for_element_clickable(self.remove_from_cart_button_locator)
-        remove_button = product.find_element(
-            *self.remove_from_cart_button_locator
-            )
-        remove_button.click()
+        self.click_child_element(product, self.remove_from_cart_button_locator)
 
     def click_product_link(self, product_name):
         """Clicks the product link to navigate to the item page."""
@@ -83,9 +77,7 @@ class InventoryPage(BasePage):
     def click_product_img(self, product_name):
         """Clicks the product image to navigate to the item page."""
         product = self.get_product_by_name(product_name)
-        self.wait_for_element_clickable(self.item_img_locator)
-        product_img = product.find_element(*self.item_img_locator)
-        product_img.click()
+        self.click_child_element(product, self.item_img_locator)
         return ItemPage(self.driver)
 
     def get_num_of_items_in_cart(self):
