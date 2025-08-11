@@ -8,6 +8,7 @@ from pages.login_page import LoginPage
 import pytest
 
 
+@pytest.mark.intfail
 def test_intentionally_fail(setup_browser, request):
     """
     This test is intentionally failing for demonstration purposes.
