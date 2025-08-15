@@ -8,6 +8,7 @@ from lib import consts
 from pages.login_page import LoginPage
 from utils.driver_factory import DriverFactory
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 import pytest
 from datetime import datetime
 import pytest_html
@@ -67,6 +68,12 @@ def setup_browser(request):
     browser_name = request.config.getoption("--browser", default="chrome")
     remote = request.config.getoption("--docker", default=False)
 
+    logger = logging.getLogger(consts.LOGGER_NAME)
+    logger.debug(
+        f"Setting up browser: {browser_name}")
+    logger.debug(
+        f"Using Docker: {remote}")
+
     driver = DriverFactory.create_driver(browser_name, remote)
     yield driver
     driver.quit()
@@ -80,12 +87,32 @@ def standard_login(setup_browser):
     """
     driver = setup_browser
     driver.get("https://saucedemo.com")
-    login_page = LoginPage(driver)
-    return login_page.login_expect_success("standard_user", "secret_sauce")
+
+    logger = logging.getLogger(consts.LOGGER_NAME)
+    logger.debug(
+        "Logging in as standard user")
+    try:
+        login_page = LoginPage(driver)
+        return login_page.login_expect_success("standard_user", "secret_sauce")
+    except TimeoutException:
+        logger.critical("TEST PREPARATION FAILED: Couldn't login as"
+                        " Standard User")
 
 #########
 # HOOKS #
 #########
+
+
+@pytest.hookimpl(wrapper=True)
+def pytest_runtest_setup(item):
+    logger = logging.getLogger(consts.LOGGER_NAME)
+    logger.info("====================")
+    logger.info("===== PREPARING TEST"
+                " USING FIXTURES:"
+                f" {item.name}"
+                " ======")
+    y = yield
+    return y
 
 
 @pytest.hookimpl(wrapper=True)
