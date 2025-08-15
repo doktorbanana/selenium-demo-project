@@ -49,7 +49,7 @@ class BasePage:
         return WebDriverWait(self.driver, self.timeout).until(
                 EC.presence_of_element_located(locator)
             )
- 
+
     def wait_for_element_visible(self, locator):
         """Waits for an element to be visible on the page."""
         return WebDriverWait(self.driver, self.timeout).until(
