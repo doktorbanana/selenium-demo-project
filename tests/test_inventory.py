@@ -21,11 +21,9 @@ def test_img_click(standard_login, product):
     product_name = product["product_name"]
     inventory_page = standard_login
     try:
-        item_page = inventory_page.click_product_img(product_name)
-    except AssertionError:
-        raise AssertionError(
-            "Clicking product image did not redirect "
-            f"to item page. Current URL: {item_page.driver.current_url}")
+        inventory_page.click_product_img(product_name)
+    except RuntimeError as e:
+        raise AssertionError(e)
 
 
 @pytest.mark.parametrize("product", products, ids=custom_ids)
@@ -36,11 +34,9 @@ def test_link_click(standard_login, product):
     product_name = product["product_name"]
     inventory_page = standard_login
     try:
-        item_page = inventory_page.click_product_link(product_name)
-    except AssertionError:
-        raise AssertionError(
-            "Clicking product link did not redirect "
-            f"to item page. Current URL: {item_page.driver.current_url}")
+        inventory_page.click_product_link(product_name)
+    except RuntimeError as e:
+        raise AssertionError(e)
 
 
 @pytest.mark.inventory
@@ -86,7 +82,7 @@ def test_cart_count(standard_login):
             try:
                 inventory_page.wait_for_element_not_visible(
                     inventory_page.cart_item_count_locator)
-            except AssertionError:
+            except TimeoutException:
                 raise AssertionError("Cart count still visible after "
                                      "removing all items. "
                                      "Expected it to be invisible.")
