@@ -4,18 +4,22 @@ It includes browser setup, screenshot handling, and custom command-line
 options.
 """
 
+from lib import consts
+from pages.login_page import LoginPage
 from utils.driver_factory import DriverFactory
 from selenium.webdriver.common.by import By
 import pytest
-import datetime
+from datetime import datetime
 import pytest_html
 import os
 import shutil
-from pages.login_page import LoginPage
+import logging
 
 
 SCREENSHOTS_PATH_RELATIVE = "screenshots"
 SCREENSHOTS_PATH = os.path.join("test_reports", SCREENSHOTS_PATH_RELATIVE)
+LOG_PATH_RELATIVE = "logs"
+LOG_PATH = os.path.join("test_reports", LOG_PATH_RELATIVE)
 
 
 def pytest_addoption(parser):
@@ -43,16 +47,16 @@ def pytest_addoption(parser):
     )
 
 
-def pytest_sessionstart(session):
-    """Create a directory for screenshots at the start of the session."""
-    if os.path.exists(SCREENSHOTS_PATH):
-        shutil.rmtree(SCREENSHOTS_PATH)
-    os.makedirs(SCREENSHOTS_PATH)
-
-
 ############
 # FIXTURES #
 ############
+
+@pytest.fixture(scope="function")
+def logger(request):
+    logger = logging.getLogger(consts.LOGGER_NAME)
+    logger.info(f"===== STARTING TEST: {request.node.name} =====")
+    yield logger
+    logger.info(f"===== FINISHED TEST: {request.node.name} =====")
 
 
 @pytest.fixture(scope="function")
@@ -92,7 +96,7 @@ def pytest_runtest_makereport(item, call):
     if report.when == "call" and report.failed:
         driver = item.funcargs.get('setup_browser')
         if driver:
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             screenshot_name = f"{item.name}_{timestamp}.png"
             screenshot_path = os.path.join(SCREENSHOTS_PATH, screenshot_name)
 
@@ -115,3 +119,42 @@ def pytest_runtest_makereport(item, call):
             report.extras = extras
 
     return report
+
+
+def pytest_configure(config):
+    _create_log_file_path()
+    _create_screenshot_path()
+    _setup_logger(config=config)
+
+
+def _create_screenshot_path():
+    """Create a directory for screenshots at the start of the session."""
+    if os.path.exists(SCREENSHOTS_PATH):
+        shutil.rmtree(SCREENSHOTS_PATH)
+    os.makedirs(SCREENSHOTS_PATH)
+
+
+def _create_log_file_path():
+    """Create a directory for log-files at the start of the session."""
+    if os.path.exists(LOG_PATH):
+        shutil.rmtree(LOG_PATH)
+    os.makedirs(LOG_PATH)
+
+
+def _setup_logger(config):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_file = os.path.join(LOG_PATH, f"testrun_{timestamp}.log")
+
+    logger = logging.getLogger(consts.LOGGER_NAME)
+    logger.setLevel(logging.INFO)
+    file_handler = logging.FileHandler(log_file)
+    formatter = logging.Formatter(
+        "%(asctime)s -"
+        " %(levelname)s"
+        " - %(name)s"
+        " - %(message)s"
+    )
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
+    config._log_file = log_file
