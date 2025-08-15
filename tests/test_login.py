@@ -69,7 +69,8 @@ def test_login(setup_browser, user):
             try:
                 login_page.login_expect_invalid_credentials(username, password)
             except TimeoutException:
-                raise AssertionError("Invalid credentials error not displayed.")
+                raise AssertionError("Invalid credentials"
+                                     " error not displayed.")
 
         case _:
             pytest.fail(f"Unexpected expected value: {expected}")
