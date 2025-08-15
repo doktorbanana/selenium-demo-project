@@ -56,13 +56,8 @@ class LoginPage(BasePage):
     def _login_expect_error(self, username, password, error_locator):
         """Logs in and expects an error message to be displayed."""
         self._login(username, password)
-        try:
-            self.wait_for_element_visible(error_locator)
-            return self
-        except AssertionError:
-            raise AssertionError(
-                f"Error message not found within {self.timeout} seconds. "
-                f"Used locator: {error_locator}")
+        self.wait_for_element_visible(error_locator)
+        return self
 
     def login_expect_success(self, username, password):
         """Logs in and expects to be redirected to the inventory page."""
