@@ -92,32 +92,35 @@ def standard_login(setup_browser):
 def pytest_runtest_makereport(item, call):
     """Capture screenshots on test failure."""
     report = yield
-
     if report.when == "call" and report.failed:
-        driver = item.funcargs.get('setup_browser')
-        if driver:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            screenshot_name = f"{item.name}_{timestamp}.png"
-            screenshot_path = os.path.join(SCREENSHOTS_PATH, screenshot_name)
+        report = _add_screenshots_to_report(report, item)
+    return report
 
-            original_size = driver.get_window_size()
-            required_width = driver.execute_script(
-                'return document.body.parentNode.scrollWidth')
-            required_height = driver.execute_script(
-                'return document.body.parentNode.scrollHeight')
-            driver.set_window_size(required_width, required_height)
-            driver.find_element(By.TAG_NAME, 'body').screenshot(
-                screenshot_path)
-            driver.set_window_size(original_size['width'],
-                                   original_size['height'])
 
-            screenshot_path_relative = os.path.join(
-                SCREENSHOTS_PATH_RELATIVE,
-                screenshot_name)
-            extras = getattr(report, "extras", [])
-            extras.append(pytest_html.extras.image(screenshot_path_relative))
-            report.extras = extras
+def _add_screenshots_to_report(report, item):
+    driver = item.funcargs.get('setup_browser')
+    if driver:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        screenshot_name = f"{item.name}_{timestamp}.png"
+        screenshot_path = os.path.join(SCREENSHOTS_PATH, screenshot_name)
 
+        original_size = driver.get_window_size()
+        required_width = driver.execute_script(
+            'return document.body.parentNode.scrollWidth')
+        required_height = driver.execute_script(
+            'return document.body.parentNode.scrollHeight')
+        driver.set_window_size(required_width, required_height)
+        driver.find_element(By.TAG_NAME, 'body').screenshot(
+            screenshot_path)
+        driver.set_window_size(original_size['width'],
+                               original_size['height'])
+
+        screenshot_path_relative = os.path.join(
+            SCREENSHOTS_PATH_RELATIVE,
+            screenshot_name)
+        extras = getattr(report, "extras", [])
+        extras.append(pytest_html.extras.image(screenshot_path_relative))
+        report.extras = extras
     return report
 
 
