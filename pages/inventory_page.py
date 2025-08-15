@@ -54,7 +54,7 @@ class InventoryPage(BasePage):
             name = product.find_element(*self.item_name_locator).text
             if name == product_name:
                 return product
-        raise AssertionError(
+        raise RuntimeError(
             f"Product '{product_name}' not found in inventory. "
             f"Products available: {[p.text for p in products]}")
 
