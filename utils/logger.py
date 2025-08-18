@@ -105,7 +105,7 @@ class TestCase:
         self.log_level = "INFO"
         self.severity = "Medium"
         self.owner = "undefined"
-        self.steps = []
+        self.steps = {}
         self.error = None
         self.status = "undefined"
 
@@ -135,11 +135,19 @@ class TestCase:
         """
         self.status = "PASS" if passed else "FAIL"
 
-    def add_step(self, step: str):
+    def start_step(self, number: int, desc: str):
         """
         Add a step for this test case.
         """
-        self.steps.append(step)
+        self.steps[number] = {
+            "descrpition": desc,
+            "state": "started"}
+
+    def mark_step_finished(self, number: int):
+        """
+        Mark a step as sucessfully finished.
+        """
+        self.steps[number]["state"] = "finished"
 
     def add_error(self, test_report: pytest.TestReport):
         """
