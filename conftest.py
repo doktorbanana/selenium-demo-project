@@ -4,17 +4,15 @@ It includes browser setup, screenshot handling, and custom command-line
 options.
 """
 
-from lib import consts
 from pages.login_page import LoginPage
 from utils.driver_factory import DriverFactory
+from utils.logger import Logger
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
 import pytest
 from datetime import datetime
 import pytest_html
 import os
 import shutil
-import logging
 
 
 SCREENSHOTS_PATH_RELATIVE = "screenshots"
@@ -52,12 +50,30 @@ def pytest_addoption(parser):
 # FIXTURES #
 ############
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def logger(request):
-    logger = logging.getLogger(consts.LOGGER_NAME)
-    logger.info(f"===== STARTING TEST: {request.node.name} =====")
+    browser_name = request.config.getoption("--browser", default="chrome")
+    remote = request.config.getoption("--docker", default=False)
+    logger = Logger((browser_name, "Docker" if remote else "Local"))
     yield logger
-    logger.info(f"===== FINISHED TEST: {request.node.name} =====")
+
+
+@pytest.fixture(scope="function")
+def test_case_logger(request, logger):
+    test_id = request.node.name
+    with logger.get_test_case(test_id) as test_case:
+        try:
+            yield test_case
+            test_case["status"] = "PASS"
+        except Exception as e:
+            test_case["status"] = "FAIL"
+            test_case["metadata"]["log_level"] = "ERROR"
+            test_case["error"] = {
+                "message": str(e),
+                "stack_trace": logger._get_stack_trace(e)
+            }
+        finally:
+            logger.close_test_case(test_case)
 
 
 @pytest.fixture(scope="function")
@@ -67,12 +83,6 @@ def setup_browser(request):
     """
     browser_name = request.config.getoption("--browser", default="chrome")
     remote = request.config.getoption("--docker", default=False)
-
-    logger = logging.getLogger(consts.LOGGER_NAME)
-    logger.debug(
-        f"Setting up browser: {browser_name}")
-    logger.debug(
-        f"Using Docker: {remote}")
 
     driver = DriverFactory.create_driver(browser_name, remote)
     yield driver
@@ -87,32 +97,12 @@ def standard_login(setup_browser):
     """
     driver = setup_browser
     driver.get("https://saucedemo.com")
-
-    logger = logging.getLogger(consts.LOGGER_NAME)
-    logger.debug(
-        "Logging in as standard user")
-    try:
-        login_page = LoginPage(driver)
-        return login_page.login_expect_success("standard_user", "secret_sauce")
-    except TimeoutException:
-        logger.critical("TEST PREPARATION FAILED: Couldn't login as"
-                        " Standard User")
+    login_page = LoginPage(driver)
+    return login_page.login_expect_success("standard_user", "secret_sauce")
 
 #########
 # HOOKS #
 #########
-
-
-@pytest.hookimpl(wrapper=True)
-def pytest_runtest_setup(item):
-    logger = logging.getLogger(consts.LOGGER_NAME)
-    logger.info("====================")
-    logger.info("===== PREPARING TEST"
-                " USING FIXTURES:"
-                f" {item.name}"
-                " ======")
-    y = yield
-    return y
 
 
 @pytest.hookimpl(wrapper=True)
@@ -152,9 +142,7 @@ def _add_screenshots_to_report(report, item):
 
 
 def pytest_configure(config):
-    _create_log_file_path()
     _create_screenshot_path()
-    _setup_logger(config=config)
 
 
 def _create_screenshot_path():
@@ -162,29 +150,3 @@ def _create_screenshot_path():
     if os.path.exists(SCREENSHOTS_PATH):
         shutil.rmtree(SCREENSHOTS_PATH)
     os.makedirs(SCREENSHOTS_PATH)
-
-
-def _create_log_file_path():
-    """Create a directory for log-files at the start of the session."""
-    if os.path.exists(LOG_PATH):
-        shutil.rmtree(LOG_PATH)
-    os.makedirs(LOG_PATH)
-
-
-def _setup_logger(config):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_file = os.path.join(LOG_PATH, f"testrun_{timestamp}.log")
-
-    logger = logging.getLogger(consts.LOGGER_NAME)
-    logger.setLevel(logging.INFO)
-    file_handler = logging.FileHandler(log_file)
-    formatter = logging.Formatter(
-        "%(asctime)s -"
-        " %(levelname)s"
-        " - %(name)s"
-        " - %(message)s"
-    )
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-
-    config._log_file = log_file
