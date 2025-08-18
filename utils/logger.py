@@ -1,4 +1,4 @@
-""" 
+"""
 This file contains classes needed for Logging the tests.
 """
 from lib import consts
@@ -13,7 +13,7 @@ import shutil
 
 class Logger:
     """
-    Create a Logger that is used for a testrun. 
+    Create a Logger that is used for a testrun.
     It logs the data of each test case in JSON format.
     """
     def __init__(self, env):
@@ -143,7 +143,7 @@ class TestCase:
 
     def add_error(self, test_report: pytest.TestReport):
         """
-        Add an error for this test case. 
+        Add an error for this test case.
         Extracts the error-msg and stacktrace from a pytest-TestReport
         and adds it to the data of this test case.
         """
