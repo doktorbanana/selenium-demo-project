@@ -105,6 +105,7 @@ class TestCase:
         self.log_level = "INFO"
         self.severity = "Medium"
         self.owner = "undefined"
+        self.group = "undefined"
         self.steps = {}
         self.error = None
         self.status = "undefined"
@@ -134,6 +135,10 @@ class TestCase:
         True for "PASS" and False for "FAIL".
         """
         self.status = "PASS" if passed else "FAIL"
+
+    def set_group(self, group: str):
+        """ Set the suite or group a test belongs to"""
+        self.group = group
 
     def start_step(self, number: int, desc: str):
         """

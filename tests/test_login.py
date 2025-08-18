@@ -31,6 +31,7 @@ def test_login(setup_browser, test_case_log, user):
         )
     test_case_log.set_severity("High")
     test_case_log.set_owner("QA")
+    test_case_log.set_group("Login")
 
     test_case_log.start_step(1, "Navigate to saucedemo.org")
     driver.get("https://saucedemo.com")
