@@ -14,7 +14,7 @@ custom_ids = [f"{row['custom_id']}" for row in users]
 
 @pytest.mark.parametrize("user", users, ids=custom_ids)
 @pytest.mark.login
-def test_login(setup_browser, test_case_logger, user):
+def test_login(setup_browser, test_case_log, user):
     """
     Test logging in with various user scenarios.
     This test covers successful login, missing username, missing password,
@@ -29,14 +29,13 @@ def test_login(setup_browser, test_case_logger, user):
     password = user["password"]
     expected = user["expected"]
 
-    ## DAS SOLLTE ALLES MIT EINER METHODE GELÖST WERDEN ZB LOGGER.SET_SEVERITY
-    test_case_logger["description"] = (
+    test_case_log.set_description(
         f"Testing Login as '{user["custom_id"]}'."
         f" Expecting '{expected}' after clicking login button."
         )
-    test_case_logger["metadata"]["severity"] = "Medium"
-    test_case_logger["metadata"]["owner"] = "QA"
-    test_case_logger["steps"].append("1. Navigated to saucedemo.org")
+    test_case_log.set_severity("High")
+    test_case_log.set_owner("QA")
+    test_case_log.add_step("1. Navigated to saucedemo.org")
 
     match expected:
         case "inventory_page":
@@ -44,7 +43,7 @@ def test_login(setup_browser, test_case_logger, user):
                 login_page.login_expect_success(
                     username,
                     password)
-                test_case_logger["steps"].append(
+                test_case_log.add_step(
                     "2. Logged in with valid credentials"
                 )
             except TimeoutException:

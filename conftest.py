@@ -59,21 +59,23 @@ def logger(request):
 
 
 @pytest.fixture(scope="function")
-def test_case_logger(request, logger):
-    test_id = request.node.name
-    with logger.get_test_case(test_id) as test_case:
-        try:
-            yield test_case
-            test_case["status"] = "PASS"
-        except Exception as e:
-            test_case["status"] = "FAIL"
-            test_case["metadata"]["log_level"] = "ERROR"
-            test_case["error"] = {
-                "message": str(e),
-                "stack_trace": logger._get_stack_trace(e)
-            }
-        finally:
-            logger.close_test_case(test_case)
+def test_case_log(request, logger):
+    with logger.create_test_case(request.node.name) as case_log:
+
+        yield case_log
+
+        if hasattr(request.node, "rep_call"):
+            report = request.node.rep_call
+            if report.failed:
+                # print("Got Exception")
+                case_log.add_error(report)
+            else:
+                # print("I think this passed")
+                case_log.set_status(passed=True)
+            logger.log_test_case(case_log)
+        else:
+            raise Warning("Couldn't Log TestData."
+                          "Test Report was not found as an attribute")
 
 
 @pytest.fixture(scope="function")
@@ -107,8 +109,12 @@ def standard_login(setup_browser):
 
 @pytest.hookimpl(wrapper=True)
 def pytest_runtest_makereport(item, call):
-    """Capture screenshots on test failure."""
+    """
+    Save test report as test attribute to make it accessible in fixtures.
+    And capture screenshots on test failure.
+    """
     report = yield
+    setattr(item, f"rep_{call.when}", report)
     if report.when == "call" and report.failed:
         report = _add_screenshots_to_report(report, item)
     return report
