@@ -52,6 +52,9 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope="session")
 def logger(request):
+    """
+    Provide a Logger for the Test Run
+    """
     browser_name = request.config.getoption("--browser", default="chrome")
     remote = request.config.getoption("--docker", default=False)
     logger = Logger((browser_name, "Docker" if remote else "Local"))
@@ -60,6 +63,9 @@ def logger(request):
 
 @pytest.fixture(scope="function")
 def test_case_log(request, logger):
+    """
+    Provide a Log for this test case
+    """
     with logger.create_test_case(request.node.name) as case_log:
 
         yield case_log

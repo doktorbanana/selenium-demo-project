@@ -56,6 +56,9 @@ def test_login(setup_browser, test_case_log, user):
         case "empty_fields_error":
             try:
                 login_page.login_expect_missing_username(username, password)
+                test_case_log.add_step(
+                    "2. Logged in with empty fields"
+                )
             except TimeoutException:
                 msg = "Missing username error not displayed."
                 raise AssertionError(msg)
@@ -63,6 +66,9 @@ def test_login(setup_browser, test_case_log, user):
         case "missing_username_error":
             try:
                 login_page.login_expect_missing_username(username, password)
+                test_case_log.add_step(
+                    "2. Logged in with emtpy username field"
+                )
             except TimeoutException:
                 msg = "Missing username error not displayed."
                 raise AssertionError(msg)
@@ -70,6 +76,9 @@ def test_login(setup_browser, test_case_log, user):
         case "missing_password_error":
             try:
                 login_page.login_expect_missing_password(username, password)
+                test_case_log.add_step(
+                    "2. Logged in with empty password field"
+                )
             except TimeoutException:
                 msg = "Missing password error not displayed."
                 raise AssertionError(msg)
@@ -77,6 +86,9 @@ def test_login(setup_browser, test_case_log, user):
         case "locked_out_error":
             try:
                 login_page.login_expect_locked_user(username, password)
+                test_case_log.add_step(
+                    "2. Logged in as locked out user"
+                )
             except TimeoutException:
                 msg = "Locked out user error not displayed."
                 raise AssertionError(msg)
@@ -84,6 +96,9 @@ def test_login(setup_browser, test_case_log, user):
         case "invalid_creds_error":
             try:
                 login_page.login_expect_invalid_credentials(username, password)
+                test_case_log.add_step(
+                    "2. Logged in with invalid credentials"
+                )
             except TimeoutException:
                 msg = ("Invalid credentials"
                        " error not displayed.")
