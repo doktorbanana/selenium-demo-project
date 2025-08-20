@@ -20,7 +20,8 @@ Professional test automation demonstrating industry best practices for web appli
 - Automatic failure screenshots with full-page capture
 - Smart waits for element visibility and interactions
 - Flaky test retry mechanism with configurable delays
-- Custom error-messages for easy debugging on failure
+- Custom logs for easy debugging on failure
+- JSON-logs for compatibility with test management services
 
 ### 📦 CI/CD Ready
 - GitHub Actions workflow for continuous testing
@@ -35,7 +36,6 @@ Professional test automation demonstrating industry best practices for web appli
 - Chrome/Firefox
 - Remote: parallel execution with browser matrix
 - Local: choose with CLI-option (`browser=`)
-
 
 ## Technologies Used
 
@@ -88,6 +88,6 @@ Optional flags:
 This project is work in progress. The following improvements are planned:
 
 - Add mobile device emulation
-- Add logging for better test debugging
 - Integrate with a test management tool (e.g., TestRail, Xray)
 - Add more test scenarios (e.g., sorting, filtering, checkout process)
+
