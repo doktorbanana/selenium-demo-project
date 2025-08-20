@@ -38,7 +38,7 @@ class Logger:
         """
         Write test data of a given test case to logfile.
         """
-        data = test_case.get_test_data()
+        data = test_case.get_json_test_data()
 
         match test_case.log_level:
             case "DEBUG":
@@ -54,16 +54,14 @@ class Logger:
             case _:
                 ValueError(f"Unexpected Log Level: {data["log_level"]}")
 
-        self._remove_test_case(test_case)
-
     def log_test_cases(self):
         """
         Write test data of all registered test cases to logfile.
         """
-        for test_case in self.test_cases:
+        for test_case in self.test_cases.values():
             self.log_test_case(test_case)
 
-    def _remove_test_case(self, test_case):
+    def remove_test_case(self, test_case):
         """
         Unregister test case.
         """
@@ -169,7 +167,17 @@ class TestCase:
         self.set_status(passed=False)
         self.log_level = "ERROR"
 
-    def get_test_data(self):
+    def get_json_test_data(self, indent=4, ascii=False):
+        """
+        Gets Test data in JSON format.
+        """
+        test_data = self._get_test_data()
+        json_test_data = json.dumps(test_data,
+                                    indent=indent,
+                                    ensure_ascii=ascii)
+        return json_test_data
+
+    def _get_test_data(self):
         """
         Returns Test Data as JSON
         """
@@ -189,9 +197,7 @@ class TestCase:
         if self.error:
             test_data["error"] = self.error
 
-        json_test_data = json.dumps(test_data, indent=4)
-
-        return json_test_data
+        return test_data
 
     def _get_stack_trace(self, report: pytest.TestReport):
         """
