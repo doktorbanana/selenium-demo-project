@@ -4,6 +4,7 @@ This file contains classes needed for Logging the tests.
 from lib import consts
 from datetime import datetime
 from contextlib import contextmanager
+from enum import StrEnum
 import json
 import logging
 import os
@@ -92,6 +93,14 @@ class Logger:
         self.logger = logger
 
 
+class TestState(StrEnum):
+    PASSED = "PASSED"
+    BLOCKED = "BLOCKED"
+    UNTESTED = "UNTESTED"
+    RETEST = "RETEST"
+    FAILED = "FAILED"
+
+
 class TestCase:
     """ TestCases can be registered at a Logger """
     def __init__(self, logger: Logger, test_id: str):
@@ -127,12 +136,11 @@ class TestCase:
         """
         self.owner = owner
 
-    def set_status(self, passed: bool):
+    def set_status(self, status: TestState):
         """
         Set the status of this test case.
-        True for "PASS" and False for "FAIL".
         """
-        self.status = "PASS" if passed else "FAIL"
+        self.status = status
 
     def set_group(self, group: str):
         """ Set the suite or group a test belongs to"""
@@ -164,7 +172,7 @@ class TestCase:
             "message": msg,
             "stacktrace": stack_trace
         }
-        self.set_status(passed=False)
+        self.set_status(TestState.FAILED)
         self.log_level = "ERROR"
 
     def get_json_test_data(self, indent=4, ascii=False):
