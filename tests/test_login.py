@@ -14,63 +14,102 @@ custom_ids = [f"{row['custom_id']}" for row in users]
 
 @pytest.mark.parametrize("user", users, ids=custom_ids)
 @pytest.mark.login
-def test_login(setup_browser, user):
+def test_login(setup_browser, test_case_log, user):
     """
     Test logging in with various user scenarios.
     This test covers successful login, missing username, missing password,
     locked user, and invalid credentials.
     """
     driver = setup_browser
-    driver.get("https://saucedemo.com")
-
-    login_page = LoginPage(driver)
-
     username = user["username"]
     password = user["password"]
     expected = user["expected"]
 
+    test_case_log.set_description(
+        f"Testing Login as '{user["custom_id"]}'."
+        f" Expecting '{expected}' after clicking login button."
+        )
+    test_case_log.set_severity("High")
+    test_case_log.set_owner("QA")
+    test_case_log.set_group("Login")
+
+    test_case_log.start_step(1, "Navigate to saucedemo.org")
+    driver.get("https://saucedemo.com")
+    login_page = LoginPage(driver)
+    test_case_log.mark_step_finished(1)
+
     match expected:
         case "inventory_page":
+            test_case_log.start_step(
+                2,
+                "Log in with valid credentials")
             try:
                 login_page.login_expect_success(
                     username,
                     password)
+                test_case_log.mark_step_finished(2)
             except TimeoutException:
-                raise AssertionError("Login failed or did not redirect"
-                                     " to inventory page."
-                                     " Current URL:"
-                                     f" {driver.current_url}")
+                msg = ("Login failed or did not redirect"
+                       " to inventory page."
+                       " Current URL:"
+                       f" {driver.current_url}")
+                raise AssertionError(msg)
 
         case "empty_fields_error":
+            test_case_log.start_step(
+                2,
+                "Log in with empty fields")
             try:
                 login_page.login_expect_missing_username(username, password)
+                test_case_log.mark_step_finished(2)
             except TimeoutException:
-                raise AssertionError("Missing username error not displayed.")
+                msg = "Missing username error not displayed."
+                raise AssertionError(msg)
 
         case "missing_username_error":
+            test_case_log.start_step(
+                2,
+                "Log in with emtpy username field")
             try:
                 login_page.login_expect_missing_username(username, password)
+                test_case_log.mark_step_finished(2)
             except TimeoutException:
-                raise AssertionError("Missing username error not displayed.")
+                msg = "Missing username error not displayed."
+                raise AssertionError(msg)
 
         case "missing_password_error":
+            test_case_log.start_step(
+                2,
+                "Log in with empty password field")
             try:
                 login_page.login_expect_missing_password(username, password)
+                test_case_log.mark_step_finished(2)
             except TimeoutException:
-                raise AssertionError("Missing password error not displayed.")
+                msg = "Missing password error not displayed."
+                raise AssertionError(msg)
 
         case "locked_out_error":
+            test_case_log.start_step(
+                    2,
+                    "Logged in as locked out user")
             try:
                 login_page.login_expect_locked_user(username, password)
+                test_case_log.mark_step_finished(2)
             except TimeoutException:
-                raise AssertionError("Locked out user error not displayed.")
+                msg = "Locked out user error not displayed."
+                raise AssertionError(msg)
 
         case "invalid_creds_error":
+            test_case_log.start_step(
+                    2,
+                    "Logged in with invalid credentials")
             try:
                 login_page.login_expect_invalid_credentials(username, password)
+                test_case_log.mark_step_finished(2)
             except TimeoutException:
-                raise AssertionError("Invalid credentials"
-                                     " error not displayed.")
+                msg = ("Invalid credentials"
+                       " error not displayed.")
+                raise AssertionError(msg)
 
         case _:
             pytest.fail(f"Unexpected expected value: {expected}")
