@@ -75,7 +75,6 @@ def test_case_log(request, logger):
             if report.failed:
                 case_log.add_error(report)
             else:
-                # print("I think this passed")
                 case_log.set_status(passed=True)
             logger.log_test_case(case_log)
         else:
