@@ -73,7 +73,6 @@ def test_case_log(request, logger):
         if hasattr(request.node, "rep_call"):
             report = request.node.rep_call
             if report.failed:
-                # print("Got Exception")
                 case_log.add_error(report)
             else:
                 # print("I think this passed")
