@@ -5,6 +5,7 @@ It is used for demonstration purposes and will only run when the
 """
 
 import pytest
+from utils.logger import TestState
 
 
 @pytest.mark.intfail
@@ -13,11 +14,6 @@ def test_intentionally_fail(standard_login, test_case_log, request):
     This test is intentionally failing for demonstration purposes.
     It is designed to fail when the --intentionally-fail option is not set.
     """
-    if not request.config.getoption("--intentionally-fail"):
-        pytest.skip(reason="This test only runs with "
-                    "--intentionally-fail option. "
-                    "It is intentionally failing for demonstration purposes.")
-
     test_case_log.set_description(
         "This test intentionally fails."
         " It's used to demonstrate how failing tests are handled."
@@ -25,6 +21,12 @@ def test_intentionally_fail(standard_login, test_case_log, request):
     test_case_log.set_severity("Low")
     test_case_log.set_owner("QA")
     test_case_log.set_group("Intentional Fail")
+
+    if not request.config.getoption("--intentionally-fail"):
+        test_case_log.set_status(TestState.UNTESTED)
+        pytest.skip(reason="This test only runs with "
+                    "--intentionally-fail option. "
+                    "It is intentionally failing for demonstration purposes.")
 
     test_case_log.start_step(1, "Login and navigate to Inventory Page")
     inventory_page = standard_login
