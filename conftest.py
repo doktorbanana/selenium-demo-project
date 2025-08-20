@@ -6,7 +6,7 @@ options.
 
 from pages.login_page import LoginPage
 from utils.driver_factory import DriverFactory
-from utils.logger import Logger
+from utils.logger import Logger, TestState
 from utils.json_log_to_html import json_log_to_html
 from selenium.webdriver.common.by import By
 import pytest
@@ -76,7 +76,8 @@ def test_case_log(request, logger):
             if report.failed:
                 case_log.add_error(report)
             else:
-                case_log.set_status(passed=True)
+                if case_log.status == "undefined":
+                    case_log.set_status(TestState.PASSED)
 
             logger.log_test_case(case_log)
             json_log = [case_log.get_json_test_data(indent=None, ascii=True)]

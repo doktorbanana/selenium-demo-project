@@ -1,5 +1,6 @@
 import json
 import html
+from utils.logger import TestState
 
 
 def json_log_to_html(json_log_entries):
@@ -23,6 +24,7 @@ def _get_docuement_style():
             :root {
                 --pass-color: #4CAF50;
                 --fail-color: #F44336;
+                --skip-color: #FFDE21;
                 --info-color: #2196F3;
                 --warning-color: #FFC107;
                 --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -51,6 +53,10 @@ def _get_docuement_style():
                 border-left-color: var(--fail-color);
             }
 
+            .test-case.skipped {
+                border-left-color: var(--skip-color)
+            }
+
             .test-header {
                 padding: 15px 20px;
                 display: flex;
@@ -75,6 +81,7 @@ def _get_docuement_style():
 
             .status-pass { background-color: var(--pass-color); color: white; }
             .status-fail { background-color: var(--fail-color); color: white; }
+            .status-skip { background-color: var(--skip-color); color: white; }
 
             .test-content {
                 padding: 0 20px;
@@ -168,9 +175,17 @@ def _add_test_case(json_log_entry):
     metadata_html = _get_metadata_html(log_entry)
     steps_html = _get_steps_html(log_entry)
     error_html = _get_error_html(log_entry)
+    class_type = ""
+
+    if status == TestState.PASSED:
+        class_type = ""
+    elif status == TestState.FAILED:
+        class_type = "failed"
+    elif status == TestState.UNTESTED:
+        class_type = "skipped"
 
     html_output = f"""
-    <div class="test-case {'failed' if status == "FAIL" else ""}">
+    <div class="test-case {class_type}">
         {test_header_html}
         <div class="test-content">
             {metadata_html}
@@ -188,6 +203,15 @@ def _get_test_header_html(log_entry):
     status = log_entry.get("status", "undefined")
     test_id = log_entry.get("test_id", "")
     description = log_entry.get('description', '')
+    state_class = ""
+    if status == TestState.PASSED:
+        state_class = "status-pass"
+    elif status == TestState.FAILED:
+        state_class = "status-fail"
+    elif status == TestState.UNTESTED:
+        state_class = "status-skip"
+    else:
+        ValueError("Unkown state of test case.")
 
     html_output = f"""
     <div class="test-header">
@@ -197,8 +221,7 @@ def _get_test_header_html(log_entry):
                     <strong>Description: </strong>{html.escape(description)}
                 </div>
             </div>
-            <div class="status-badge
-            {'status-pass' if status == 'PASS' else 'status-fail'}">
+            <div class="status-badge {state_class}">
                 {status}
             </div>
         </div>"""
@@ -281,7 +304,7 @@ def _get_error_html(log_entry):
     status = log_entry.get("status", "undefined")
 
     error_html = ""
-    if status == "FAIL" and "error" in log_entry:
+    if status == TestState.FAILED and "error" in log_entry:
         error = log_entry["error"]
         error_msg = "<strong>Error Message:</strong>" \
             f"\n{html.escape(error.get('message', ''))}"
@@ -292,5 +315,5 @@ def _get_error_html(log_entry):
         <div class="error-section">{error_msg}
         <hr>{stacktrace}
         </div>"""
-    
+
     return error_html
